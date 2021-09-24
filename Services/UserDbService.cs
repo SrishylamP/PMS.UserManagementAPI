@@ -200,7 +200,7 @@ namespace PMS.UserManagementAPI.Services
             try
             {
                 var resObj = new ResponseMessage();
-                var obj = _context.Users.FirstOrDefault((e) => e.EmployeeId == model.EmployeeId);
+                var obj = _context.Users.FirstOrDefault((e) => e.UserId == model.UserId);
 
                 if (obj != null)
                 {
