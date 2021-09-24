@@ -69,6 +69,10 @@ namespace PMS.UserManagementAPI.Services
                     resObj.IsSuccess = true;
                     resObj.message = "Registration successful";
                 }
+                if (resObj.IsSuccess == true)
+                {
+                    bool f = Common.SendDefaultPasswordEmail(Constants.FromEmail, Constants.RegisterSubject, Constants.RegisterMessage, model.Email, model.Password);
+                }
                 return resObj;
             }
             catch (Exception ex)
@@ -103,6 +107,11 @@ namespace PMS.UserManagementAPI.Services
                 {
                     isUnlocked = false;
 
+                }
+                if (isUnlocked)
+                {
+                   
+                    Common.SendEmail(obj.FirstName, Constants.FromEmail, model.Email, Constants.BlockedSubject, Constants.BlockedMessage);
                 }
                 return isUnlocked;
             }
@@ -161,8 +170,18 @@ namespace PMS.UserManagementAPI.Services
         {
             try
             {
+              
                 bool isUpdated = false;
                 var obj = _context.Users.FirstOrDefault(e => e.Email == model.Email);
+                if (model.IsBlocked || (!model.IsBlocked && !model.IsActive))
+                {
+
+                    var password = Common.GeneratePassword();
+                    //string firstName = _logindbService.UserDetail(model.Email);
+                    Common.SendEmail(obj.FirstName, Constants.FromEmail, model.Email, Constants.ActivateUserSubject, Constants.ActivateUserMessage, null, password);
+
+                    await DefaultForgotPassword(model.Email, Common.CreateMD5(password));
+                }
                 if (obj != null)
                 {
                     obj.IsActive = model.IsActive;
@@ -187,6 +206,7 @@ namespace PMS.UserManagementAPI.Services
                     isUpdated = false;
 
                 }
+               
                 return isUpdated;
             }
             catch (Exception ex)
