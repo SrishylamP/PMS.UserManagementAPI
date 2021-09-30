@@ -227,6 +227,7 @@ namespace PMS.UserManagementAPI.Services
                     obj.FirstName = model.FirstName;
                     obj.LastName = model.LastName;
                     obj.Phone = model.Phone;
+                    obj.RoleId = model.RoleId;
                     //obj.EmployeeId = model.EmployeeId;
                     await _context.SaveChangesAsync();
                     resObj.IsSuccess = true;
